@@ -1,0 +1,259 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: 8cb4b16a2ae761ae637e563ea2323cd2_48c97212a0ec11f1a413525400287e28
+    ReservedCode1: /g2lvlroTUC9b11rxk1TdmBgJzORuPIbP0tv6m+g2JwYmTZsbH1iesHMwB/G67KjZVr7hQSIryyN7MWEr6cOBlEQoZcnBU8plARlL7SPYdN0TccXrso9uzbjPSI2SJWqEPquBK3wTYtLd86xKFnIbXAKNuVGgjmV+ces6dZfaieUVIj/LIxPqK844os=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: 8cb4b16a2ae761ae637e563ea2323cd2_48c97212a0ec11f1a413525400287e28
+    ReservedCode2: /g2lvlroTUC9b11rxk1TdmBgJzORuPIbP0tv6m+g2JwYmTZsbH1iesHMwB/G67KjZVr7hQSIryyN7MWEr6cOBlEQoZcnBU8plARlL7SPYdN0TccXrso9uzbjPSI2SJWqEPquBK3wTYtLd86xKFnIbXAKNuVGgjmV+ces6dZfaieUVIj/LIxPqK844os=
+---
+
+
+
+
+
+# 0号仓库库存管理系统（PC 端 v1.3.1）
+
+> 版本：**PC 端 v1.3.1** ｜ 更新日期：2026-08-26 ｜ 状态：本地可用，待后续部署
+
+## 项目简介
+
+自研**0号仓库库存管理系统**，面向电商小店 + 少量批发场景的 **PC 端网页应用**。
+
+- 数据自掌控：开源免费或自研，不被收费软件卡脖子
+- 一套代码多端访问：可在本机 Windows、局域网其他电脑、服务器上通过浏览器使用
+- 支持角色权限（老板 / 管理员 / 员工三级）
+- 手机端规划为**独立项目单独开发**（见「后续版本规划」，本轮不做，方便分仓库独立管理版本）
+
+## 版本信息
+
+| 项 | 说明 |
+|---|---|
+| 当前版本 | PC 端 v1.3 |
+| 支持平台 | Windows 本机 / 局域网多电脑 / 服务器（浏览器访问） |
+| 数据库 | 本地开发 SQLite（默认 backend/data/inventory.db，旧库自动迁移进 data/，可通过设置中心迁移至任意盘）；Docker 部署 PostgreSQL |
+| 手机端 | 独立项目，后续单独开发（本轮不做） |
+
+## 已实现功能清单（v1.3.1）
+
+**v1.3.1 新增：**
+- **品牌更名**：软件名全局更改为「0号仓库库存管理系统」，替换原「星穹」品牌字样（登录页品牌块 / 副标题 / 页脚、侧边栏左上角 logo 名称、浏览器页面标题、README 标题与简介、主题默认名、示例工作室名、标签打印测试数据等）
+- **侧边栏分组重构**：菜单按「库存管理 / 运营分析 / 系统」分组；原「回收站」改名「商品回收站」，作为「库存管理」分组下的二级子菜单（展开态缩进显示），首页独立置顶
+- **收起态品牌区常驻**：侧边栏收起时左上角品牌区（logo + 0号仓库名称）横条常驻完整、名称完整可读，仅下方导航菜单收窄为图标条（图标 + 悬停 tooltip 保留），展开态品牌区与完整导航正常显示
+
+## 已实现功能清单（v1.2.2）
+
+**v1.2.2 新增：**
+- **真实星云背景**：两套终末地主题登录后主界面背景改用真实游戏场景截图（太空星云，1920x1080），低透明度 + 主题色半透明遮罩叠加（谷地黄=暖黄调、武陵青=青冷调），随主题切换保证面板/表格文字清晰；上传自定义背景图优先级最高（逻辑保留）
+- **详情页主题辨识度强化**：面板 / 卡片 / 表格 / 表头 / 标题条 / 按钮 / 侧边栏高亮 / 边框全面吃主题令牌 --accent/--primary——谷地黄 = 黄 #fff500 强调 + 白底黑字、武陵青 = 青 #14d0d0 强调 + 深色底，登录后主题一眼可辨
+
+**v1.2.1 新增：**
+- **主界面全面终末地工业风**：登录后主界面的面板 / 卡片 / 表格 / 按钮 / 弹窗 / 侧边栏全部套用终末地设计令牌（全直角、工业细线边框、黄 #fff500 / 青 #14d0d0 强调、斜线网格纹理、HUD 角标装饰），与登录页质感统一；功能与布局保持不变
+- **主题概念背景系统**：谷地黄主题绑定「暖色工业废土城」概念背景、武陵青主题绑定「冷色科学院/科幻都市」概念背景，均由 SVG 代码自绘原创概念场景（工业剪影 / 科研塔 / 轨道 / 矿区等），低透明度 + 半透明遮罩铺底保证文字表格可读；上传自定义背景图优先级最高（有自定义图则优先展示用户图，否则用主题自带概念背景）
+
+**既有能力（v1.2 及之前）：**
+- **账号与权限**：老板 / 管理员 / 员工三级账号，登录鉴权
+- **设置中心**：UI 外观自定义（亮/暗/随机 + 8 套预设主题色，含「终末地·谷地黄 / 终末地·武陵青」两套全直角工业风主题，0号仓库蓝紫保留为备选；上传本地图片作背景，偏好存后端用户表、换设备一致）；数据存储位置自定义（仅本机 SQLite，自动安全迁移：备份/校验/回滚，仅 boss / 管理员可用）；云端备份预留占位入口（本期不实现）
+- **品牌登录页**：终末地黄白黑工业风品牌加载动画（进度竖轨 + 刻度 + 百分比 + 品牌块，填充→铺满→淡出约 2.5s，prefers-reduced-motion 自动跳过，结束后登录表单逐元素入场）
+- **侧边栏动态收展**：默认窄条图标态，鼠标悬停自动展开完整侧栏、移出自动收回，主内容区随展开自适应变宽
+- **路由转场动画**：轻量淡入 + 上移（mode=out-in），覆盖登录页与全部子路由切换
+- **UI 质感增强**：粒子星云 canvas 背景（随主题换色）、HUD 角标与仪表装饰、SVG 噪点纹理、终末地主题卡片全直角切角，装饰层低透明保证可读性
+- **商品档案**：SPU/SKU 商品管理，分类 / 单位 / 重量单位自由维护，商品图片
+- **扫码出入库**：扫码/条码快速出入库，库存流水记录，低库存提示
+- **采购入库**：供应商管理 + 采购单 + 扫码建单 + 批量入库
+- **销售出库**：销售单（草稿 CRUD）+ 折扣 + 确认出库自动减库存，流水/留痕/回滚
+- **财务对账**：成本快照、毛利分析、渠道分组对账明细、日期过滤、staff 权限
+- **库存分析**：汇总、分类库存、库存排行、销售排行、慢动销、低库存、趋势
+- **标签打印**：商品标签排版（60×40 默认画布、元素整体缩放、水平对齐、三段式自动排版）、常用发件人管理、布局模板（LabelTemplate）
+- **渠道追踪**：销售渠道管理，按渠道统计销售与毛利
+- **审计日志**：操作留痕
+
+## 技术栈
+
+| 层 | 技术 |
+|---|---|
+| 前端 | Vue 3 + Vite（响应式 Web，PC 浏览器访问） |
+| 后端 | Python FastAPI |
+| 数据库 | SQLite（本地开发）/ PostgreSQL（Docker 部署，psycopg2） |
+| 部署 | Docker Compose 一键部署 |
+
+## 目录结构
+
+```
+ECommerceInventorySystem/
+├── backend/      # 后端代码（FastAPI，含 venv、inventory.db、test_*.py 回归测试）
+├── frontend/     # 前端代码（Vue 3 + Vite）
+├── database/     # 数据库结构与迁移脚本
+├── deploy/       # 部署配置（docker-compose.yml、start/stop-docker.sh、.env.example）
+├── docs/         # 需求与设计文档
+├── scripts/      # 工具脚本
+├── start.bat     # Windows 一键启动（后端 8000 + 前端 5173）
+├── stop.bat      # Windows 一键停止
+└── .gitignore    # 版本忽略规则（venv / node_modules / dist / *.db / *.log / .env 等）
+```
+
+## 本地开发启动方式（Windows）
+
+### 一键启动（推荐）
+
+双击桌面「0号仓库库存管理系统」快捷方式（指向根目录 `start.bat`），或直接运行 `start.bat`：
+
+- 自动拉起后端（8000）与前端（5173），已在运行的端口自动跳过
+- 首次运行自动安装依赖（backend venv + npm install）
+- 服务就绪后自动打开浏览器 `http://localhost:5173`
+
+停止服务：双击 `stop.bat`。
+
+### 手动启动（开发模式）
+
+```bash
+# 1. 启动后端（8000 端口）
+cd backend
+python -m venv venv
+venv\Scripts\pip install -r requirements.txt
+venv\Scripts\python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+# 2. 启动前端（5173 端口）
+cd frontend
+npm install
+npm run dev
+# 浏览器打开 http://localhost:5173
+
+# 默认老板账号：boss / admin123（登录后请尽快在「账号权限」里修改）
+```
+
+### 其他电脑访问
+
+1. 拷贝整个项目文件夹（或从 git 拉取）到目标电脑
+2. 确认已安装 Python 3.10+ 与 Node.js 18+（并加入 PATH）
+3. 双击 `start.bat`，浏览器自动打开 `http://localhost:5173`
+4. 手机 / 其他电脑连同一局域网可访问 `http://本机IP:5173`
+
+## Docker 部署（本地服务器验证）
+
+> 已在本机 Docker 环境完整验证通过（db / backend / frontend 三服务）。云服务器 / 家里服务器部署放下一版。
+
+### 部署前置（新电脑一次准备）
+
+1. 安装 **Docker Desktop**（会自动带起 **WSL2**，Windows 10/11 均适用）
+2. 若本机**无法直连 Docker Hub**（拉镜像超时 / 被拒），需配置国内镜像加速。编辑 Docker daemon 配置（Windows 为 `C:\Users\<用户名>\.docker\daemon.json`），加入 registry-mirrors 后**重启 Docker Desktop**：
+
+```json
+{
+  "registry-mirrors": [
+    "https://docker.1ms.run",
+    "https://docker.m.daocloud.io",
+    "https://docker.1panel.live"
+  ]
+}
+```
+
+> 提示：可用 `docker pull postgres:16-alpine` 自测是否直连成功；仍失败则按上述配置加速后重启。
+
+### 一键启动命令（Windows 示例）
+
+```bash
+# 1. 进入部署目录
+cd deploy
+
+# 2. 首次运行前从示例生成环境变量
+copy .env.example .env     # Linux: cp .env.example .env
+
+# 3. 构建并后台启动三服务（db + backend + frontend）
+docker compose up -d --build
+
+# 4. 浏览器访问
+#    前端：   http://localhost
+#    健康检查：http://localhost/api/health
+```
+
+- 停止服务：`docker compose down`（保留数据卷，仅停容器）；彻底移除含数据：`docker compose down -v`
+- 查看日志：`docker compose logs -f backend`
+- 首次启动时 backend 可能早于 db 就绪出现一次连接重试，由 `restart: unless-stopped` 自动自愈，无需干预
+
+### 部署后检查
+
+| 检查项 | 地址 / 说明 |
+|---|---|
+| 后端健康检查 | `http://localhost/api/health`，返回 `{"status":"ok",...}` 即正常 |
+| 前端页面 | `http://localhost`，能打开登录页即正常 |
+| 默认账号 | 老板 `boss` / `admin123`（登录后可在「账号权限」修改） |
+| 数据库 | 仅监听 `127.0.0.1:5432`（库 inventory / 用户 inventory），不对外暴露 |
+
+### 生产部署必改项
+
+**上线前务必**在 `deploy/.env` 中修改以下默认值，否则存在安全风险：
+
+- `POSTGRES_PASSWORD`（默认 inventory123）
+- `SECRET_KEY`（默认 please-change-me-in-production）
+- `BOSS_PASSWORD`（默认 admin123）
+
+### 数据持久化
+
+业务数据存于 **named volume `pgdata`**（PostgreSQL 数据卷）。`docker compose down` / 重建容器**不丢数据**；只有 `docker compose down -v` 才会清空。
+
+### PostgreSQL 兼容性说明
+
+后端已适配 PostgreSQL / SQLite 双数据库：`backend/app/main.py` 的 `ensure_schema()` 通过新增的 `_table_columns()` 按库类型分支获取已有列（PostgreSQL 走 `information_schema.columns`，SQLite 保留 `PRAGMA table_info`），本地 SQLite 开发环境与 Docker PostgreSQL 部署共用一套代码，均不受影响。
+
+Docker 编排说明（`deploy/docker-compose.yml`）：
+
+| 服务 | 说明 |
+|---|---|
+| db | PostgreSQL 16（仅监听 127.0.0.1，数据卷 pgdata 持久化） |
+| backend | FastAPI 后端，连接 db，容器内部 8000（不对外映射） |
+| frontend | Nginx 静态前端 + 反向代理，对外暴露 80 端口 |
+
+## 回归测试
+
+```bash
+# 后端：启动 uvicorn（隔离临时库）后运行全部 test_*.py
+cd backend
+venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765
+venv\Scripts\python.exe test_analysis.py   # 库存分析回归
+venv\Scripts\python.exe test_catunit.py    # 分类/单位回归
+venv\Scripts\python.exe test_finance.py    # 财务对账回归
+venv\Scripts\python.exe test_label_print.py
+venv\Scripts\python.exe test_label_templates.py
+venv\Scripts\python.exe test_purchase.py   # 采购入库回归
+venv\Scripts\python.exe test_sales.py      # 销售出库回归
+venv\Scripts\python.exe test_settings.py   # 设置中心回归
+venv\Scripts\python.exe test_audit_cleanup.py  # 操作日志清理回归（权限 / 手动清理 / 自动清理）
+
+# 前端：生产构建
+cd frontend
+npm run build
+```
+
+## 默认账号
+
+| 角色 | 用户名 | 初始密码 | 权限 |
+|------|--------|---------|------|
+| 老板 | boss | admin123 | 全部权限，可管账号 |
+| 管理员 | （老板创建） | - | 增改数据，不能管账号 |
+| 员工 | staff1 | 123456 | 仅填看数据（示例账号） |
+
+## 版本记录
+
+| 版本 | 日期 | 说明 |
+|------|------|------|
+| PC 端 v1.3.1 | 2026-08-26 | 品牌更名「0号仓库库存管理系统」：全局替换原「星穹」品牌字样（登录页品牌块/副标题/页脚、侧边栏 logo 名称、浏览器页面标题、README 标题与简介、主题默认名、示例工作室名、标签打印测试数据）；侧边栏重构——按「库存管理/运营分析/系统」分组，原「回收站」改名「商品回收站」并作为「库存管理」分组下二级子菜单（展开态缩进），首页独立置顶；收起态品牌区（logo+0号仓库）横条常驻完整，仅导航菜单收窄为图标条（图标+悬停 tooltip 保留），展开态品牌区与完整导航正常显示 |
+| PC 端 v1.2.2 | 2026-08-26 | 主界面背景改用真实游戏场景太空星云截图（1920x1080）：谷地黄叠加暖黄调低透明遮罩、武陵青叠加青冷调深色遮罩，随主题切换保证文字清晰；强化详情页主题辨识度——面板/卡片/表格/表头/标题条/按钮/侧边栏高亮/边框全面吃 --accent/--primary 令牌（谷地黄=黄#fff500强调+白底黑字、武陵青=青#14d0d0强调+深色底，一眼可辨）；上传自定义背景图优先级最高保留，登录页不动 |
+| PC 端 v1.2.1 | 2026-08-25 | 主界面全面终末地工业风（面板/表格/按钮/弹窗/侧边栏统一设计令牌：全直角+工业细线+黄#fff500/青#14d0d0强调+斜线网格+HUD角标）；新增主题概念背景系统（谷地黄=暖色工业废土城、武陵青=冷色科学院/科幻都市，SVG 代码自绘原创概念场景，低透明+半透明遮罩，上传自定义背景优先级最高）；昼夜双主题手动切换保留，原 6 套主题不变 |
+| PC 端 v1.2 | 2026-08-25 | 品牌登录页终末地工业风加载动画；新增「终末地·谷地黄 / 终末地·武陵青」两套全直角工业风主题（亮/暗归类）；侧边栏动态收展；路由转场动画；粒子星云 HUD 噪点质感增强 |
+| PC 端 v1.1.1 | 2026-08-24 | 新增「操作日志清理」：后端 DELETE /api/audits（boss / 管理员可手动清理，支持按日期或清空全部）+ 启动自动清理（默认保留最近 90 天，清理动作写入系统审计记录）；左侧目录栏固定（布局改造，仅右侧内容区滚动） |
+| PC 端 v1.1 | 2026-08-24 | 新增「设置中心」：UI 外观自定义（亮/暗/随机 + 6 套预设主题色 + 背景图 DIY，偏好存后端用户表换设备一致）、数据存储位置自定义（仅本机 SQLite 自动安全迁移，备份/校验/回滚，仅 boss / 管理员可用）、云端备份预留占位入口；存储区按角色显隐（普通员工仅外观） |
+| PC 端 v1.0 初稿 | 2026-08-23 | 商品档案 / 扫码出入库 / 采购入库 / 销售出库 / 财务对账 / 库存分析 / 标签打印 / 三级账号权限 / 渠道追踪 / 审计日志；本地 git 版本管理 + Docker 本地验证 + 回归测试通过 |
+
+## 后续版本规划
+
+- **手机端独立项目**：单独开项目单独开发，方便分仓库管理，PC 端与手机端各自独立版本
+- **打印机型号兼容**：扩展标签打印对更多型号打印机的兼容与驱动适配
+- **云服务器部署**：将 Docker 部署迁移至云服务器 / 家里服务器，实现长期稳定对外服务
+- **云端备份**：设置中心已预留入口（本期占位），后续接入真实云备份 / 同步能力
+- **多平台同步**：PC 端与手机端数据同步方案、多仓库数据统一
+- 更多打印模板样式、报表导出、批量导入导出等增强功能
+*（内容由AI生成，仅供参考）*
+*（内容由AI生成，仅供参考）*
+*（内容由AI生成，仅供参考）*

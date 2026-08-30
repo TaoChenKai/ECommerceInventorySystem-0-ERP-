@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电商库存管理系统 · 设计文档</title>
+<style>
+  :root{
+    --primary:#1d4ed8; --primary-2:#2563eb; --accent:#f59e0b;
+    --ink:#0f172a; --muted:#475569; --line:#e2e8f0;
+    --bg:#f4f6fb; --card:#ffffff; --green:#16a34a; --red:#dc2626;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75;
+    padding:32px 16px; font-size:15px;
+  }
+  .wrap{max-width:960px; margin:0 auto;}
+  header.hero{
+    background:linear-gradient(135deg,#1d4ed8 0%,#4f46e5 100%);
+    color:#fff; border-radius:20px; padding:44px 40px; margin-bottom:28px;
+    box-shadow:0 12px 30px rgba(29,78,216,.25);
+  }
+  header.hero .tag{
+    display:inline-block; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3);
+    padding:4px 14px; border-radius:999px; font-size:12px; letter-spacing:2px; margin-bottom:14px;
+  }
+  header.hero h1{font-size:30px; font-weight:800; letter-spacing:1px;}
+  header.hero p.sub{margin-top:12px; color:#e0e7ff; font-size:14px; max-width:680px;}
+  header.hero .meta{margin-top:20px; font-size:13px; color:#c7d2fe;}
+  nav.toc{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:20px 24px; margin-bottom:28px;
+  }
+  nav.toc h2{font-size:14px; color:var(--muted); margin-bottom:10px; letter-spacing:1px;}
+  nav.toc ol{list-style:none; display:grid; grid-template-columns:repeat(2,1fr); gap:6px 24px;}
+  nav.toc a{color:var(--primary); text-decoration:none; font-size:14px;}
+  nav.toc a:hover{text-decoration:underline;}
+  section.card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:30px 32px; margin-bottom:22px;
+  }
+  section.card h2{
+    font-size:21px; font-weight:800; margin-bottom:6px; display:flex; align-items:center; gap:10px;
+  }
+  section.card h2 .num{
+    background:var(--primary); color:#fff; width:30px; height:30px; border-radius:8px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
+  }
+  section.card h3{font-size:16px; font-weight:700; margin:22px 0 10px; color:var(--primary-2);}
+  section.card p{margin:8px 0; color:var(--ink);}
+  .muted{color:var(--muted); font-size:13px;}
+  ul.dots, ol.dots{margin:8px 0 8px 22px;}
+  ul.dots li, ol.dots li{margin:4px 0;}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14px;}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{background:#eef2ff; color:var(--primary); font-weight:700; white-space:nowrap;}
+  tr:nth-child(even) td{background:#fafbfe;}
+  .badge{display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:700;}
+  .b-green{background:#dcfce7; color:#15803d;}
+  .b-blue{background:#dbeafe; color:#1d4ed8;}
+  .b-orange{background:#fef3c7; color:#b45309;}
+  .b-gray{background:#f1f5f9; color:#475569;}
+  .callout{
+    border-left:4px solid var(--accent); background:#fffbeb; border-radius:0 10px 10px 0;
+    padding:14px 18px; margin:16px 0; font-size:14px;
+  }
+  .callout.blue{border-left-color:var(--primary); background:#eff6ff;}
+  .callout.red{border-left-color:var(--red); background:#fef2f2;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0;}
+  .mini{background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .mini h4{font-size:14px; font-weight:700; color:var(--primary-2); margin-bottom:8px;}
+  .mono{font-family:Consolas,"Courier New",monospace; background:#0f172a; color:#e2e8f0;
+    border-radius:10px; padding:16px 18px; font-size:13px; line-height:1.9; overflow-x:auto; margin:12px 0;}
+  footer{text-align:center; color:var(--muted); font-size:12px; margin-top:8px; padding:20px;}
+  @media(max-width:680px){
+    nav.toc ol{grid-template-columns:1fr;}
+    .grid2{grid-template-columns:1fr;}
+    section.card{padding:22px 18px;}
+    header.hero{padding:30px 22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="tag">PRODUCT DESIGN DOC</span>
+    <h1>电商库存管理系统 · 设计文档</h1>
+    <p class="sub">面向小店电商经营者的自部署库存管理平台 —— 对标「旺店通」核心能力，本地部署、多端互通、数据自有，摆脱收费 ERP 与平台佣金绑架。</p>
+    <div class="meta">文档版本 v1.5 ｜ 编制日期 2026-08-13 ｜ 编制人 Marvis</div>
+  </header>
+
+  <nav class="toc">
+    <h2>目录</h2>
+    <ol>
+      <li><a href="#s1">一、项目概述</a></li>
+      <li><a href="#s2">二、需求分析</a></li>
+      <li><a href="#s3">三、核心概念（SPU / SKU）</a></li>
+      <li><a href="#s4">四、功能全景与分期</a></li>
+      <li><a href="#s5">五、功能模块详细说明</a></li>
+      <li><a href="#s6">六、对标旺店通对照</a></li>
+      <li><a href="#s7">七、技术架构</a></li>
+      <li><a href="#s8">八、数据模型设计</a></li>
+      <li><a href="#s9">九、界面规划</a></li>
+      <li><a href="#s10">十、开发路线图</a></li>
+      <li><a href="#s11">十一、风险与边界</a></li>
+    </ol>
+  </nav>
+
+  <!-- 一 -->
+  <section class="card" id="s1">
+    <h2><span class="num">1</span>项目概述</h2>
+    <h3>1.1 项目背景</h3>
+    <p>经营者主业为游戏 / 3D 设计与建模，副业经营电商小店。当前使用「秒账」管理库存，但该软件收费偏高、功能与体验欠佳；市面主流电商 ERP（如旺店通、聚水潭等）功能虽强，但采用订阅制收费，且按平台订单量抽佣，前期资金压力大、长期被「卡脖子」。</p>
+    <h3>1.2 项目目标</h3>
+    <ul class="dots">
+      <li><strong>自研自部署</strong>：建设一套完全自主掌控的库存管理系统，源码与数据均归经营者所有，无订阅费、无抽佣。</li>
+      <li><strong>多端互通</strong>：PC 与手机浏览器实时同步，一套代码、随处访问。</li>
+      <li><strong>对标旺店通</strong>：以旺店通核心能力为蓝本，逐步覆盖商品、库存、价格、财务、供应商、订单、电商对接等能力。</li>
+      <li><strong>可扩展</strong>：预留电商平台对接、自定义属性扩展的架构，随业务成长平滑演进。</li>
+    </ul>
+    <h3>1.3 对标对象</h3>
+    <p>以「旺店通 ERP 企业版」为功能标杆，重点对标其 <strong>商品管理、订单管理、库存管理、采购管理、财务管理、店铺/平台对接</strong> 六大模块，并针对小店场景做减法，优先落地核心刚需。</p>
+  </section>
+
+  <!-- 二 -->
+  <section class="card" id="s2">
+    <h2><span class="num">2</span>需求分析</h2>
+    <h3>2.1 业务规模</h3>
+    <table>
+      <tr><th>维度</th><th>规模</th><th>说明</th></tr>
+      <tr><td>款式（SPU）</td><td>约 300 款</td><td>样式相似、暂可按款拆分管理</td></tr>
+      <tr><td>每款规格（SKU）</td><td>2 ~ 十几个不等</td><td>款式不同规格数不同，系统不设上限（5~6 仅为估算均值）</td></tr>
+      <tr><td>SKU 总量</td><td>约 1500 ~ 1800 个</td><td>现代数据库完全无压力</td></tr>
+      <tr><td>销售渠道</td><td>电商为主，批发为辅</td><td>客户群体分散</td></tr>
+      <tr><td>使用者</td><td>主账号 1 人 + 可增子账号</td><td>老板（超管）+ 管理员 + 员工三级权限</td></tr>
+    </table>
+    <h3>2.2 核心诉求</h3>
+    <ul class="dots">
+      <li>每个产品拥有<strong>专属 ID + 二维码 / 条形码</strong>，扫码即可查看商品信息与实时库存。</li>
+      <li>卖出一件扫一下即<strong>出库</strong>，自动扣减库存，并沉淀销售流水。</li>
+      <li>自动分析<strong>哪些款好卖、哪些积压滞销</strong>，辅助经营决策。</li>
+      <li>记录<strong>成本价、销售价、活动价（双11 / 618 / 七夕）、平台补贴价</strong>，系统自动核算毛利，无需手动计算。</li>
+      <li>覆盖<strong>物流成本</strong>、<strong>财务对账</strong>、<strong>供应商管理</strong>等电商刚需。</li>
+      <li>支持<strong>自定义属性</strong>（名称、型号、类型、重量、美工图、实体图及任意扩展字段）。</li>
+      <li>后期对接<strong>小红书 / 抖音 / 拼多多 / 天猫 / 海外平台</strong>等电商渠道。</li>
+      <li>支持<strong>打印标签 / 单据</strong>：商品二次包装时，用打印机打印含名称、信息二维码、售价的标签贴到新包装。</li>
+      <li><strong>账号登录 + 多级权限</strong>：账号密码进入系统防泄露，老板 / 管理员 / 员工三级权限，员工只填看、管理员可配字段、老板全权。</li>
+      <li><strong>票据 / 回执单打印</strong>：出货时打三联单（存根 / 记账 / 客户联），给客户回执、自留实体备份，方便后期复盘。</li>
+      <li><strong>销售渠道追踪</strong>：每笔出货标记来源（实体店 / 天猫 / 淘宝 / 拼多多 / 京东 / 抖音 / 海外等），按平台统计销量与毛利，指导「专攻哪个平台」。</li>
+    </ul>
+    <h3>2.3 数据迁移</h3>
+    <p>现有数据存储于「秒账」，该软件<strong>支持导出与导入</strong>。系统将提供<strong>「秒账数据一键导入」</strong>功能：经营者导出 Excel / CSV 后，拖入系统即可自动建立商品、规格与库存，实现无缝搬迁。</p>
+  </section>
+
+  <!-- 三 -->
+  <section class="card" id="s3">
+    <h2><span class="num">3</span>核心概念（SPU / SKU）</h2>
+    <p>这是整个系统的地基。要管理「同款式、多规格」的商品，必须区分两个层级：</p>
+    <div class="grid2">
+      <div class="mini">
+        <h4>SPU（款式 / 商品）</h4>
+        <p>一个「款式」为一个 SPU。例如「T恤 A 款」，拥有同一套名称、主图、详情、类型、重量等公共信息。</p>
+      </div>
+      <div class="mini">
+        <h4>SKU（规格 / 单品）</h4>
+        <p>SPU 下的每个可独立售卖、独立管理库存的规格。例如「T恤 A 款 · 红色 · XL 码」，才拥有独立条码 / 二维码与独立库存。</p>
+      </div>
+    </div>
+    <div class="mono">
+款式 SPU（T恤 A 款）
+  ├─ SKU：红色 · XL 码（条码 001，库存 12）
+  ├─ SKU：红色 · L 码（条码 002，库存 20）
+  ├─ SKU：蓝色 · XL 码（条码 003，库存 8）
+  └─ SKU：蓝色 · L 码（条码 004，库存 15）
+    </div>
+    <div class="callout blue">
+      <strong>为什么这么分？</strong> 扫码时识别的是 SKU（具体规格），扣减的是该 SKU 的库存；销量统计既可按 SPU 汇总（哪个款卖爆），也可按 SKU 汇总（哪个码积压）。这套模型一旦定好，活动价、电商对接、采购补货全部顺理成章。规格数量<strong>完全自由</strong>：每款挂 2 个、5 个、十几个 SKU 都行，不设上限、不要求统一；新增规格只在 SKU 子表加一行，款式与老数据纹丝不动。
+    </div>
+  </section>
+
+  <!-- 四 -->
+  <section class="card" id="s4">
+    <h2><span class="num">4</span>功能全景与分期</h2>
+    <p>采用<strong>三期递进</strong>策略：先把「算清账 + 管好货」的地基打牢，再逐步扩展，避免一口吃成胖子。</p>
+
+    <h3>4.1 第一版（MVP · 立即落地）</h3>
+    <table>
+      <tr><th>模块</th><th>核心能力</th></tr>
+      <tr><td>商品档案</td><td>名称、型号、类型、重量、美工图、实体图</td></tr>
+      <tr><td>规格变体 SKU</td><td>一款多规格，每个规格独立条码 / 二维码、独立库存</td></tr>
+      <tr><td>扫码出入库</td><td>扫一下即出入库，实时扣减库存，流水可追溯</td></tr>
+      <tr><td>基础价格</td><td>成本价 + 销售价</td></tr>
+      <tr><td><strong>财务对账</strong></td><td>平台对账、快递对账、应收应付、毛利自动核算</td></tr>
+      <tr><td><strong>供应商管理</strong></td><td>供应商信息、比价、进货记录、到货</td></tr>
+      <tr><td>库存 / 销量分析</td><td>热销款、滞销积压款一目了然</td></tr>
+      <tr><td>多端互通</td><td>PC + 手机浏览器实时同步</td></tr>
+      <tr><td>数据导入</td><td>秒账 Excel 一键搬迁</td></tr>
+      <tr><td><strong>标签打印</strong></td><td>自定义标签模板，打印名称、信息二维码、售价，连接电脑打印机批量打印</td></tr>
+      <tr><td><strong>账号与权限</strong></td><td>账号密码登录，老板 / 管理员 / 员工三级权限，操作日志留痕</td></tr>
+      <tr><td><strong>销售渠道追踪</strong></td><td>出库标渠道（实体店 / 各电商平台），按渠道统计销量、销售额、毛利</td></tr>
+    </table>
+
+    <h3>4.2 第二版（订单量上来后）</h3>
+    <table>
+      <tr><th>模块</th><th>核心能力</th></tr>
+      <tr><td><strong>退货售后</strong></td><td>退货入库、换货处理、退货回流库存</td></tr>
+      <tr><td><strong>采购补货</strong></td><td>按销量自动建议进货量、采购预警</td></tr>
+      <tr><td>多活动价格引擎</td><td>双11 / 618 / 七夕 / 平台补贴价自动算</td></tr>
+      <tr><td>物流成本核算</td><td>每单运费成本记录与统计</td></tr>
+      <tr><td><strong>票据 / 单据打印</strong></td><td>三联单（存根 / 记账 / 客户联），销售单、进货单一键打印</td></tr>
+    </table>
+
+    <h3>4.3 第三版（对接电商平台后）</h3>
+    <table>
+      <tr><th>模块</th><th>核心能力</th></tr>
+      <tr><td>订单管理全流程</td><td>抓单、审核、拆分合并、发货、跟踪</td></tr>
+      <tr><td>电商平台对接</td><td>抖音 / 拼多多 / 天猫 / 小红书 / 海外平台逐个接</td></tr>
+      <tr><td>客户 / 会员</td><td>客户资料、复购分析</td></tr>
+      <tr><td>多仓库</td><td>多级分仓、仓库间调拨</td></tr>
+      <tr><td>营销策略</td><td>买一赠一、组合套装、满减</td></tr>
+      <tr><td>精细权限进阶</td><td>数据权限、字段级权限、审批流、考勤等更细粒度管控</td></tr>
+    </table>
+  </section>
+
+  <!-- 五 -->
+  <section class="card" id="s5">
+    <h2><span class="num">5</span>功能模块详细说明</h2>
+
+    <h3>5.1 商品管理</h3>
+    <p>管理 SPU 与 SKU 两级档案。SPU 承载公共信息（名称、型号、类型、重量、主图、美工图、实体图、详情）；SKU 承载规格信息（尺寸 / 颜色等 + 独立条码 + 独立库存）。支持<strong>自定义属性</strong>：经营者可随时新增任意字段（材质、产地、风格等），系统不锁死。</p>
+
+    <h3>5.2 条码 / 二维码管理</h3>
+    <p>每个 SKU 自动生成<strong>唯一编码</strong>，支持生成二维码与条形码图片，可直接打印张贴。扫码枪与手机摄像头均可识别，扫码即定位到对应 SKU。</p>
+
+    <h3>5.3 出入库与库存</h3>
+    <ul class="dots">
+      <li><strong>入库</strong>：采购到货、退货回库、盘点调整。</li>
+      <li><strong>出库</strong>：销售出库、报损、调拨。</li>
+      <li>每一笔变动均写入<strong>流水</strong>，库存由流水累加而成，账实可逐笔追溯。</li>
+      <li>库存预警：低于阈值提醒补货、高于阈值提醒积压。</li>
+    </ul>
+
+    <h3>5.4 价格与毛利核算</h3>
+    <p>系统记录<strong>成本价</strong>与<strong>销售价</strong>，并预留<strong>活动价格引擎</strong>（第二版）：为每个活动（双11 / 618 / 七夕 / 平台补贴）配置规则，核算时自动套用，直接输出<strong>实际售价、平台补贴、物流成本、最终毛利</strong>，全程无需手动计算。</p>
+
+    <h3>5.5 财务对账（第一版重点）</h3>
+    <ul class="dots">
+      <li>平台对账、快递对账、支付宝 / 微信对账。</li>
+      <li>应收 / 应付管理、结算管理。</li>
+      <li>自动生成利润表、销售明细报表。</li>
+    </ul>
+
+    <h3>5.6 供应商管理（第一版重点）</h3>
+    <ul class="dots">
+      <li>供应商档案：名称、联系方式、供货品类。</li>
+      <li>进货记录：每次采购留痕，支持比价。</li>
+      <li>到货验货记录。</li>
+    </ul>
+
+    <h3>5.7 数据分析</h3>
+    <p>提供库存状况、出入库统计、热销 / 滞销排行、毛利分析等报表，辅助「哪些该补货、哪些该停产」的经营决策。</p>
+
+    <h3>5.8 标签打印（第一版重点）</h3>
+    <p>商品到货后需<strong>二次包装</strong>，不能直接用厂家原包装出货，因此需用打印机重新打印标签，贴到新包装上。系统提供完整标签打印能力：</p>
+    <ul class="dots">
+      <li><strong>标签内容自定义</strong>：商品名称、详细数据二维码、销售价格、SKU 编号、规格、材质、生产日期等，想打哪些字段自己勾选。</li>
+      <li><strong>信息二维码</strong>：标签上生成「含商品完整信息的二维码」，贴到新包装后扫码即可还原该商品全部档案（与扫码入库同一套编码）。</li>
+      <li><strong>连接电脑打印机</strong>：支持常见标签 / 热敏打印机（USB、蓝牙、网络），标签尺寸可配（40×30、50×30、60×40mm 等）。</li>
+      <li><strong>批量打印</strong>：勾选多个商品一键批量打印标签，也支持打印入库单、出库单等单据。</li>
+    </ul>
+    <p>流程：录入商品信息 → 选择商品 → 预览标签 → 打印 → 贴到新包装。扫码、打印、入库一气呵成。</p>
+
+    <h3>5.9 账号与权限管理（第一版重点）</h3>
+    <p>系统涉及经营核心数据，<strong>账号密码登录</strong>是防泄露的第一道门。采用<strong>三级账号</strong>体系，权限自上而下收敛：</p>
+    <table>
+      <tr><th>角色</th><th>数量</th><th>可做的事</th><th>不能做的事</th></tr>
+      <tr><td><strong>老板（超级管理员）</strong></td><td>1 个（唯一）</td><td>查看 / 修改 / 删除一切数据；配置字段；账号管理；数据库升级；新增功能模块</td><td>—（全权）</td></tr>
+      <tr><td><strong>管理员</strong></td><td>多个</td><td>填写数据、翻阅数据；添加基础字段（单位 / 类型 / 型号 / 功能等字典项）</td><td>不能修改 / 删除核心业务数据；不能升级；不能加模块；不能管账号</td></tr>
+      <tr><td><strong>员工</strong></td><td>多个</td><td>填写数据（出入库录入等）、翻阅数据</td><td>不能改配置、不能删数据、不能升级、不能管账号</td></tr>
+    </table>
+    <ul class="dots">
+      <li><strong>登录安全</strong>：账号 + 密码（密钥）登录，密码加密存储，可自助修改。</li>
+      <li><strong>权限隔离</strong>：不同角色可见、可操作的范围不同，员工看不到老板的配置与升级入口。</li>
+      <li><strong>操作日志（审计）</strong>：记录谁在什么时间做了什么，可追溯，防止误操作与数据外泄。</li>
+      <li><strong>自由增删子账号</strong>：老板可随时新增 / 停用管理员与员工账号，一人一账号。</li>
+    </ul>
+    <p>第三版再进阶到<strong>数据权限、字段级权限、审批流</strong>等更细粒度管控。</p>
+
+    <h3>5.10 票据 / 单据打印（第二版，单量上来后）</h3>
+    <p>单量增大后，需要给客户纸质回执、并自留纸质存根作为实体备份。系统提供「单据打印」能力，与 5.8 标签打印共用一套打印引擎，只是打印「交易单据」而非商品标签。</p>
+    <ul class="dots">
+      <li><strong>三联单设计</strong>：一张纸分三联——存根联（自己留档）、记账联（备份）、客户联（给客户的回执单），虚线分隔可撕分。</li>
+      <li><strong>回执单内容</strong>：商品名称、单价、数量、金额小计、合计、日期、单号，客户一目了然。</li>
+      <li><strong>单据类型</strong>：销售单（出货回执）、进货单（采购凭证）、出入库单，各自模板可配。</li>
+      <li><strong>打印机兼容</strong>：支持 A5 / A4 纸打印三联单，也支持热敏小票机打印单联小票。</li>
+      <li><strong>自动生成</strong>：开单 / 出入库时自动生成对应单据，一键打印，无需二次录入。</li>
+    </ul>
+    <p>价值：客户拿回执、门店留存根，白纸黑字可查证；纸质备份与系统电子数据互为印证，方便后期复盘。</p>
+
+    <h3>5.11 销售渠道追踪（第一版重点）</h3>
+    <p>货从哪里卖出去的，必须记下来。多平台 + 实体店并行时，只有知道每笔出货来自哪个渠道，才能看清「哪个平台卖得多、毛利高、值得深耕」。</p>
+    <ul class="dots">
+      <li><strong>渠道档案</strong>：维护全部销售渠道（实体店、天猫、淘宝、拼多多、京东、抖音、小红书、海外平台等），可随时自定义增删——平台会变，渠道绝不写死。</li>
+      <li><strong>出库标渠道</strong>：每次销售出库时选择渠道来源，手机扫码时顺手点一下，零负担。</li>
+      <li><strong>渠道统计报表</strong>：按渠道统计销量、销售额、毛利及占比，各平台自动排行。</li>
+      <li><strong>辅助「专攻哪个平台」</strong>：哪个月活动高、哪个平台客户多、毛利高，一目了然；集中资源深耕高产出平台，低产出平台先放一放（员工有限时尤其重要）。</li>
+    </ul>
+    <p>为什么第一版就要做：数据从第一天开始积累。若等订单量上来再补渠道记录，历史数据已不可追，无从对比。第一版做「渠道记录 + 基础统计」，平台复购率、客户画像等深度分析放到第三版。</p>
+  </section>
+
+  <!-- 六 -->
+  <section class="card" id="s6">
+    <h2><span class="num">6</span>对标旺店通对照</h2>
+    <p>以下为旺店通核心能力与本系统规划的对照，标注优先级与落地版本。</p>
+    <table>
+      <tr><th>旺店通功能</th><th>本系统规划</th><th>优先级 / 版本</th></tr>
+      <tr><td>商品 / 货品管理</td><td>商品档案 + 规格变体 + 自定义属性</td><td><span class="badge b-green">第一版</span></td></tr>
+      <tr><td>条码扫描 / PDA</td><td>二维码 / 条形码 + 手机扫码</td><td><span class="badge b-green">第一版</span></td></tr>
+      <tr><td>标签 / 单据打印</td><td>自定义标签，打印名称、信息二维码、售价</td><td><span class="badge b-green">第一版</span></td></tr>
+      <tr><td>单据打印 / 三联单</td><td>销售单 / 进货单 / 出入库单，三联单留档给客户</td><td><span class="badge b-blue">第二版</span></td></tr>
+      <tr><td>库存管理 / 多级分仓</td><td>实时库存 + 出入库流水（多仓留到第三版）</td><td><span class="badge b-blue">第一版 / 第三版</span></td></tr>
+      <tr><td>财务对账</td><td>平台 / 快递 / 支付对账 + 应收应付 + 毛利</td><td><span class="badge b-green">第一版</span></td></tr>
+      <tr><td>供应商 / 采购管理</td><td>供应商档案 + 进货记录 + 比价</td><td><span class="badge b-green">第一版</span></td></tr>
+      <tr><td>订单管理全流程</td><td>抓单 / 审核 / 拆分合并 / 发货</td><td><span class="badge b-orange">第三版</span></td></tr>
+      <tr><td>退换货 / 逆向物流</td><td>退货入库、换货处理</td><td><span class="badge b-blue">第二版</span></td></tr>
+      <tr><td>智能补货 / 采购预警</td><td>按销量自动建议进货量</td><td><span class="badge b-blue">第二版</span></td></tr>
+      <tr><td>多活动营销价格</td><td>活动价格引擎</td><td><span class="badge b-blue">第二版</span></td></tr>
+      <tr><td>物流成本 / 智选物流</td><td>物流成本核算</td><td><span class="badge b-blue">第二版</span></td></tr>
+      <tr><td>多平台销售渠道追踪</td><td>渠道档案 + 出库标渠道 + 渠道统计</td><td><span class="badge b-green">第一版</span></td></tr>
+<tr><td>多平台对接（500+ 平台）</td><td>主流电商平台逐个对接</td><td><span class="badge b-orange">第三版</span></td></tr>
+      <tr><td>批次 / 保质期 / 序列号</td><td>批次管理（先进先出）</td><td><span class="badge b-blue">第二版</span></td></tr>
+      <tr><td>客户 / 会员管理</td><td>客户资料 + 复购分析</td><td><span class="badge b-orange">第三版</span></td></tr>
+      <tr><td>员工 / 权限管理</td><td>三级账号 + 权限隔离 + 操作日志（第一版）；数据权限 / 审批流（第三版）</td><td><span class="badge b-green">第一版 / 第三版</span></td></tr>
+    </table>
+    <div class="callout">
+      <strong>结论：</strong>旺店通本质是「订单 + 库存 + 采购 + 财务 + 多平台」五位一体。本系统规划已补齐<strong>财务对账、供应商</strong>（第一版）与<strong>退货售后、采购补货</strong>（第二版）等关键缺口，其余能力按量级演进，全程自主掌控、零订阅费、零抽佣。
+    </div>
+  </section>
+
+  <!-- 七 -->
+  <section class="card" id="s7">
+    <h2><span class="num">7</span>技术架构</h2>
+    <h3>7.1 形态选择</h3>
+    <div class="grid2">
+      <div class="mini">
+        <h4>响应式 Web + PWA（选定）</h4>
+        <p>一套代码，PC / 手机 / 平板浏览器通用；PWA 可将系统「安装」到手机桌面，体验接近 App，且无需上架应用商店。</p>
+      </div>
+      <div class="mini">
+        <h4>原生 App（后期 · 安卓 + 鸿蒙 Next）</h4>
+        <p>订单量上来后开发原生 App，覆盖安卓与鸿蒙 Next（iOS 暂缓），采用 uni-app 与 Web 同源复用，仓库扫码体验再升一档。</p>
+      </div>
+    </div>
+    <h3>7.2 技术栈</h3>
+    <table>
+      <tr><th>层级</th><th>技术选型</th><th>说明</th></tr>
+      <tr><td>前端</td><td>Vue 3 + Vite</td><td>响应式界面，一套代码多端适配</td></tr>
+      <tr><td>后端</td><td>Python（FastAPI）</td><td>轻量高效，便于快速迭代与对接 API</td></tr>
+      <tr><td>数据库</td><td>PostgreSQL</td><td>稳定可靠，支持事务与复杂查询</td></tr>
+      <tr><td>部署</td><td>Docker + Docker Compose</td><td>一键部署，环境隔离，迁移方便</td></tr>
+    </table>
+    <h3>7.3 部署方案</h3>
+    <p>系统打包为<strong>一键部署包</strong>（Docker Compose + 启动脚本），最终落地到经营者自有的 Windows 11 服务器（该服务器同时用于 3D / 游戏云端渲染）。Docker Desktop + WSL2 运行容器，数据库与系统稳定托管，数据 100% 自有。</p>
+    <h3>7.4 多端互通</h3>
+    <p>系统为 B/S 架构，PC 与手机通过同一地址访问，数据实时同步；局域网或内网穿透 / 公网映射后，可在外网随时访问。</p>
+
+    <h3>7.5 架构扩展性保障</h3>
+    <p>系统按「<strong>模块化 + 可扩展数据模型</strong>」设计，从第 1 版起就为后续版本预留扩展空间，后续加功能<strong>不推倒重来、不重建数据库</strong>：</p>
+    <ul class="dots">
+      <li><strong>数据永不重建</strong>：商品、库存、账目等老数据是资产，任何版本升级都「原地升级」，绝不要求重新录入。</li>
+      <li><strong>加功能 = 加表 / 加字段</strong>：数据库采用可扩展设计，新功能对应新表或新字段，老数据不动（如后期加「质检记录」，只新建质检表挂到商品上）。</li>
+      <li><strong>模块插拔式</strong>：财务、供应商、打印、退货、采购、电商对接等均为独立模块，加新模块不影响已有模块。</li>
+      <li><strong>升级 = 打补丁</strong>：每次升级用「增量迁移」脚本自动适配老数据，全程无感、不丢数据。</li>
+      <li><strong>规格数量自由</strong>：SPU 与 SKU 为「一对多」关系，每款挂 2 个还是十几个规格都不受限，新增规格只增行、不动款。</li>
+    </ul>
+    <p>唯一需大改的是「核心商品模型被彻底推翻」这类极端情况，但该模型已在第 1 版定稿，基本不会发生；即便发生，也按「保留数据 + 平滑迁移」处理，不要求重录。</p>
+  </section>
+
+  <!-- 八 -->
+  <section class="card" id="s8">
+    <h2><span class="num">8</span>数据模型设计</h2>
+    <p>核心实体及其关系如下：</p>
+    <div class="mono">
+供应商 Supplier ──供应──▶ 商品 SPU ──含──▶ 规格 SKU
+                                    │
+                                    ├─ 条码 Barcode（唯一）
+                                    ├─ 库存 Stock（实时）
+                                    └─ 出入库流水 StockLog（可追溯）
+
+财务 Finance ──▶ 对账单 / 应收应付 / 毛利
+价格 Price ──▶ 成本价 / 销售价 / 活动价规则
+    </div>
+    <h3>核心数据表概览</h3>
+    <table>
+      <tr><th>表名</th><th>说明</th></tr>
+      <tr><td>suppliers</td><td>供应商档案</td></tr>
+      <tr><td>products (SPU)</td><td>款式 / 商品公共信息</td></tr>
+      <tr><td>skus</td><td>规格变体，含独立条码与库存</td></tr>
+      <tr><td>stock_logs</td><td>出入库流水，逐笔可追溯，记录渠道来源</td></tr>
+      <tr><td>prices</td><td>成本价、销售价及活动价规则</td></tr>
+      <tr><td>finances</td><td>对账单、应收应付、毛利</td></tr>
+      <tr><td>label_templates</td><td>标签打印模板（字段、版式）</td></tr>
+      <tr><td>users</td><td>账号（老板 / 管理员 / 员工）与密码</td></tr>
+      <tr><td>roles</td><td>角色与权限配置</td></tr>
+      <tr><td>audit_logs</td><td>操作日志（谁、何时、做了什么）</td></tr>
+      <tr><td>purchases</td><td>进货 / 采购记录（第二版扩展）</td></tr>
+      <tr><td>orders</td><td>订单（第三版对接平台后启用）</td></tr>
+      <tr><td>documents</td><td>销售单 / 进货单等单据记录（第二版扩展）</td></tr>
+      <tr><td>channels</td><td>销售渠道档案（实体店 / 各电商平台，可自定义）</td></tr>
+    </table>
+  </section>
+
+  <!-- 九 -->
+  <section class="card" id="s9">
+    <h2><span class="num">9</span>界面规划</h2>
+    <div class="grid2">
+      <div class="mini">
+        <h4>PC 端页面</h4>
+        <ul class="dots">
+          <li>工作台（数据总览）</li>
+          <li>商品管理（SPU / SKU）</li>
+          <li>库存管理 / 出入库</li>
+          <li>财务对账</li>
+          <li>供应商管理</li>
+          <li>数据分析报表</li>
+          <li>标签打印</li>
+          <li>账号与权限管理</li>
+          <li>票据 / 单据打印</li>
+          <li>渠道分析报表</li>
+        </ul>
+      </div>
+      <div class="mini">
+        <h4>手机端页面</h4>
+        <ul class="dots">
+          <li>扫码出入库（核心）</li>
+          <li>库存速查</li>
+          <li>商品详情</li>
+          <li>快速对账</li>
+          <li>热销 / 滞销速览</li>
+          <li>账号登录</li>
+          <li>出库选渠道</li>
+        </ul>
+      </div>
+    </div>
+    <p class="muted">界面遵循「PC 重管理、手机重扫码操作」的分工，手机端以扫码出入库和库存速查为最高频入口。</p>
+  </section>
+
+  <!-- 十 -->
+  <section class="card" id="s10">
+    <h2><span class="num">10</span>开发路线图</h2>
+    <table>
+      <tr><th>阶段</th><th>交付物</th><th>目标</th></tr>
+      <tr><td>① 设计定稿</td><td>本设计文档（已完成）</td><td>确认需求与范围</td></tr>
+      <tr><td>② 第一版开发</td><td>商品 + SKU + 扫码 + 库存 + 价格 + 财务 + 供应商 + 导入 + 标签打印 + 账号权限 + 渠道追踪</td><td>本地跑通，可替换秒账</td></tr>
+      <tr><td>③ 第一版验收</td><td>导入秒账数据、试运营</td><td>验证业务流程与数据准确</td></tr>
+      <tr><td>④ 本地服务器部署</td><td>Docker 一键部署到自有服务器</td><td>数据自有、7×24 在线</td></tr>
+      <tr><td>⑤ 第二版扩展</td><td>退货、补货、活动价、物流成本、票据打印</td><td>订单量上升后的效率提升</td></tr>
+      <tr><td>⑥ 第三版对接</td><td>订单管理 + 电商平台逐个对接</td><td>全链路自动化</td></tr>
+    </table>
+  </section>
+
+  <!-- 十一 -->
+  <section class="card" id="s11">
+    <h2><span class="num">11</span>风险与边界</h2>
+    <div class="callout red">
+      <strong>诚实边界：</strong>电商平台对接（抖音 / 天猫 / 拼多多 / 海外等）为后期大工程，各平台开放 API 存在资质审核门槛，且部分接口可能收费。本系统前期不接入平台，先打好「商品 + 库存 + 价格 + 财务 + 供应商」地基，待订单量增长后再逐个平台推进。
+    </div>
+    <h3>关键前提</h3>
+    <ul class="dots">
+      <li>秒账数据需能导出为 Excel / CSV，方可实现一键迁移（经营者已确认支持导出）。</li>
+      <li>本地服务器需安装 Docker 环境（Windows 11 使用 Docker Desktop + WSL2）。</li>
+      <li>外网访问需配置内网穿透或公网映射（后期按需处理）。</li>
+    </ul>
+  </section>
+
+  <footer>
+    电商库存管理系统 · 设计文档 v1.5 ｜ 生成于 2026-08-13 ｜ 本文档为需求与设计蓝图，后续开发将据此展开
+  </footer>
+
+</div>
+</body>
+</html>

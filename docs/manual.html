@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0号仓库库存管理系统 · 完整说明文档（v1.3.3）</title>
+<style>
+  :root{
+    --bg:#0b0d10; --bg2:#10131a; --panel:#141821; --panel2:#1a1f2b;
+    --border:#262c3a; --yellow:#fff500; --cyan:#14d0d0; --text:#e6e9f0;
+    --muted:#98a2b6; --accent:#ffb400;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1200px 500px at 85% -5%, rgba(20,208,208,.10), transparent 60%),
+      radial-gradient(1000px 600px at 0% 0%, rgba(255,245,0,.07), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font:15px/1.85 "Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  }
+  .wrap{max-width:1020px;margin:0 auto;padding:0 24px}
+  header.top{
+    position:sticky;top:0;z-index:50;background:rgba(11,13,16,.9);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar{display:flex;align-items:center;gap:16px;padding:12px 0}
+  .topbar .logo{
+    width:34px;height:34px;border:1px solid var(--yellow);border-radius:4px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--yellow);
+    background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(255,245,0,.08) 6px 7px);
+    clip-path:polygon(0 0,100% 0,100% 75%,85% 100%,0 100%);
+  }
+  .topbar .tt{font-size:16px;font-weight:700;letter-spacing:.5px}
+  .topbar .ver{margin-left:auto;font-size:12px;color:var(--muted);border:1px solid var(--border);padding:3px 10px;border-radius:999px;background:var(--panel)}
+  .hero{
+    padding:52px 0 34px;border-bottom:1px dashed var(--border);margin-bottom:34px;
+  }
+  .hero h1{font-size:30px;line-height:1.35;font-weight:800;margin-bottom:12px}
+  .hero h1 .sub{display:block;font-size:15px;font-weight:500;color:var(--muted);margin-top:8px}
+  .hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .hero .meta span{font-size:12.5px;color:var(--muted);border:1px solid var(--border);background:var(--panel);padding:5px 12px;border-radius:6px}
+  .badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:5px;vertical-align:middle}
+  .b-yellow{color:#111;background:var(--yellow)}
+  .b-cyan{color:#08131a;background:var(--cyan)}
+  .b-line{color:var(--muted);border:1px solid var(--border);background:transparent}
+  nav.toc{
+    background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--yellow);
+    border-radius:8px;padding:18px 22px;margin-bottom:40px;
+  }
+  nav.toc b{display:block;margin-bottom:8px;color:var(--yellow);font-size:13px;letter-spacing:2px}
+  nav.toc ol{margin-left:20px;columns:2;column-gap:36px;font-size:13.5px}
+  nav.toc a{color:var(--text);text-decoration:none}
+  nav.toc a:hover{color:var(--yellow)}
+  section{margin-bottom:44px}
+  section h2{
+    font-size:21px;font-weight:800;color:var(--yellow);margin-bottom:18px;padding-bottom:10px;
+    border-bottom:2px solid var(--yellow);display:flex;align-items:center;gap:10px;
+  }
+  section h2::before{content:"";width:8px;height:8px;background:var(--yellow);clip-path:polygon(0 0,100% 50%,0 100%)}
+  h3{font-size:16.5px;color:var(--cyan);margin:22px 0 10px}
+  h4{font-size:14.5px;margin:16px 0 8px;color:var(--text)}
+  p{margin:8px 0;color:var(--text)}
+  ul,ol{margin:8px 0 8px 22px}
+  li{margin:4px 0}
+  .muted{color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--panel)}
+  th,td{border:1px solid var(--border);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);color:var(--yellow);font-weight:700;white-space:nowrap}
+  tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+  pre{
+    background:#0d1017;border:1px solid var(--border);border-left:3px solid var(--cyan);
+    padding:14px 16px;border-radius:8px;overflow-x:auto;margin:12px 0;
+  }
+  code{font-family:Consolas,"Courier New",monospace;font-size:12.8px;color:#7ee0e0}
+  p code,li code,td code{background:#10141d;border:1px solid var(--border);padding:1px 6px;border-radius:4px;color:#a8e6e6}
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:14px 0;
+  }
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .kv .k{color:var(--cyan);font-weight:700}
+  .note{
+    border:1px solid rgba(255,245,0,.35);background:rgba(255,245,0,.05);border-radius:8px;
+    padding:12px 16px;margin:14px 0;font-size:13.5px;
+  }
+  .warn{border-color:rgba(255,120,0,.4);background:rgba(255,120,0,.06)}
+  .flow{
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;margin:12px 0;
+  }
+  .flow span{border:1px solid var(--border);background:var(--panel2);padding:6px 12px;border-radius:6px}
+  .flow i{color:var(--yellow);font-style:normal;font-weight:700}
+  .verline{border-left:2px solid var(--border);margin:8px 0 8px 6px;padding-left:18px}
+  .veritem{position:relative;padding:12px 0;border-bottom:1px dashed var(--border)}
+  .veritem:last-child{border-bottom:none}
+  .veritem .vtag{display:inline-block;font-weight:800;color:#0c0e12;background:var(--yellow);padding:2px 10px;border-radius:5px;margin-right:10px}
+  .veritem .vtag.cyan{background:var(--cyan)}
+  .veritem .date{color:var(--muted);font-size:12.5px;margin-left:4px}
+  footer{padding:30px 0 46px;border-top:1px solid var(--border);color:var(--muted);font-size:12.5px}
+  @media (max-width:760px){ nav.toc ol{columns:1} .hero h1{font-size:24px} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap topbar">
+    <div class="logo">0</div>
+    <div class="tt">0号仓库库存管理系统</div>
+    <div class="ver">v1.3.3 · 2026-08-27</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <h1>0号仓库库存管理系统
+      <span class="sub">PC 端网页版电商库存系统 · 完整说明文档（覆盖 v1.0 初稿 ~ v1.3.3）</span>
+    </h1>
+    <div class="meta">
+      <span><b class="badge b-yellow">Vue 3 + Vite</b></span>
+      <span><b class="badge b-cyan">FastAPI</b></span>
+      <span>SQLite / PostgreSQL</span>
+      <span>Docker Compose</span>
+      <span>JWT 三级权限</span>
+      <span>终端工业风 UI</span>
+    </div>
+  </div>
+
+  <nav class="toc">
+    <b>目 录</b>
+    <ol>
+      <li><a href="#s1">项目简介</a></li>
+      <li><a href="#s2">技术架构</a></li>
+      <li><a href="#s3">目录结构</a></li>
+      <li><a href="#s4">功能特性全景</a></li>
+      <li><a href="#s5">版本更新历史</a></li>
+      <li><a href="#s6">安装部署与运行</a></li>
+      <li><a href="#s7">默认账号</a></li>
+      <li><a href="#s8">主题与外观自定义</a></li>
+      <li><a href="#s9">回收站 / 智能筛选 / 权限</a></li>
+      <li><a href="#s10">回归测试</a></li>
+      <li><a href="#s11">打包发布（GitHub）</a></li>
+      <li><a href="#s12">常见问题 FAQ</a></li>
+    </ol>
+  </nav>
+
+  <!-- 一、简介 -->
+  <section id="s1">
+    <h2>一、项目简介</h2>
+    <p><b>0号仓库库存管理系统</b>（原名「星穹」电商库存系统）是一套自研的 <b>PC 端网页版电商库存管理系统</b>，面向电商小店与少量批发的实际业务场景。系统采用 <b>Vue 3 + Vite 前端</b> 与 <b>FastAPI 后端</b>，本地默认 SQLite，Docker 部署可平滑切换 PostgreSQL。</p>
+    <div class="grid">
+      <div class="card"><h4>数据自掌控</h4><p class="muted">开源免费或自研实现，不被收费 SaaS 卡脖子。</p></div>
+      <div class="card"><h4>一套代码多端</h4><p class="muted">本机 Windows、局域网电脑、云服务器经浏览器访问。</p></div>
+      <div class="card"><h4>三级权限</h4><p class="muted">老板 / 管理员 / 员工，职责边界清晰。</p></div>
+      <div class="card"><h4>业务闭环</h4><p class="muted">商品 → 出入库 → 采购 → 销售 → 财务 → 分析，附打印 / 渠道 / 审计 / 回收站。</p></div>
+    </div>
+    <div class="note">移动端规划为<b>独立项目单独开发</b>（便于分仓库管理版本），不在本版本范围内。</div>
+  </section>
+
+  <!-- 二、技术架构 -->
+  <section id="s2">
+    <h2>二、技术架构</h2>
+    <h3>2.1 总体架构</h3>
+    <div class="flow">
+      <span>浏览器（PC / 局域网 / 服务器）</span><i>▸</i>
+      <span>前端 Vue 3 + Vite（Nginx / dev）</span><i>▸</i>
+      <span>FastAPI（RESTful + JWT）</span><i>▸</i>
+      <span>SQLite（本地）/ PostgreSQL（Docker）</span>
+    </div>
+    <h3>2.2 后端模块</h3>
+    <table>
+      <tr><th>模块</th><th>说明</th></tr>
+      <tr><td>app/main.py</td><td>应用入口、CORS，启动 <code>ensure_schema()</code> 自动建表 / 增量迁移 / 回收站与审计日志自动清理</td></tr>
+      <tr><td>app/models.py</td><td>ORM 模型：User / Spu / Sku / Category / StockLog / Purchase(Item) / Sale(Item) / Channel / LabelTemplate / AuditLog / UserPreference 等</td></tr>
+      <tr><td>app/routers/</td><td>16 个业务路由：auth / spus / stock / purchase / sales / finance / analysis / channels / label / label_templates / recycle / users / settings / audits / uploads 等</td></tr>
+      <tr><td>app/schemas.py · security.py · deps.py</td><td>Pydantic 模型；bcrypt + JWT；<code>get_current_user</code> / <code>require_role("boss","admin")</code></td></tr>
+      <tr><td>app/config.py</td><td>读取 .env、SQLite 路径归一、存储迁移、<code>AUDIT_RETENTION_DAYS</code> 等</td></tr>
+      <tr><td>app/database.py</td><td>SQLAlchemy 引擎 / Session，SQLite 与 PostgreSQL 双数据库适配</td></tr>
+    </table>
+    <h3>2.3 前端模块</h3>
+    <table>
+      <tr><th>模块</th><th>说明</th></tr>
+      <tr><td>src/views/</td><td>18 个页面：Login / Dashboard / Products / ProductForm / Recycle / StockInOut / StockLogs / Purchase* / Sales* / Finance / Analysis / Channels / LabelPrint / UserManage / AuditLog / SettingsDialog</td></tr>
+      <tr><td>src/components/</td><td>Layout（侧边栏）、ThemeBackdrop（主题背景）、StarField（粒子星云）、ImageUploader 等</td></tr>
+      <tr><td>src/router/index.js</td><td>路由 + 角色守卫（meta.roles 控制财务 / 回收站 / 账号 / 日志仅管理员可见）</td></tr>
+      <tr><td>src/utils/theme.js</td><td>主题色板、偏好应用、<b>本地缓存兜底 + 后端校准（v1.3.3）</b></td></tr>
+    </table>
+    <div class="note">数据库兼容：<code>ensure_schema()</code> 的 <code>_table_columns()</code> 按库类型分支——PostgreSQL 走 <code>information_schema.columns</code>，SQLite 保留 <code>PRAGMA table_info</code>，迁移逻辑两库共用一套代码。</div>
+  </section>
+
+  <!-- 三、目录结构 -->
+  <section id="s3">
+    <h2>三、目录结构</h2>
+    <pre><code>ECommerceInventorySystem/
+├── backend/                  # FastAPI 后端（app/ 源码 + data/ 运行数据 + 9 个回归测试 + .env.example）
+├── frontend/                 # Vue 3 + Vite 前端（src/ + public/backgrounds 主题素材 + 双 Dockerfile）
+├── database/                 # 数据库结构与迁移脚本（Docker 启动自动建表）
+├── deploy/                   # docker-compose.yml + .env.example + start/stop-docker.sh
+├── docs/                     # README-full.md（本文档 md 版）+ manual.html（本文档 HTML 版）
+├── scripts/                  # 工具脚本
+├── README.md / RELEASE.md    # 项目速览 / 发行与推 GitHub 指南
+├── start.bat / stop.bat      # Windows 一键启动 / 停止
+└── .gitignore                # 版本忽略规则（venv/node_modules/dist/*.db/*.log/.env 等）</code></pre>
+  </section>
+
+  <!-- 四、功能特性 -->
+  <section id="s4">
+    <h2>四、功能特性全景</h2>
+    <div class="card"><h4>4.1 账号与三级权限</h4>
+      <p><b>老板</b>：全部权限 + 账号管理（创建 / 删除管理员与员工，老板账号唯一不可删、不可接口创建）；<b>管理员</b>：业务增改 + 后台管理（回收站 / 财务 / 日志），不能管账号；<b>员工</b>：仅查看。路由 <code>meta.roles</code> 与后端 <code>require_role</code> 双层控制。</p>
+    </div>
+    <div class="card"><h4>4.2 商品档案</h4><p>SPU / SKU 两级结构，分类 / 单位 / 重量单位维护，商品图片上传，条码 / 规格 / 成本 / 售价 / 库存字段完整。</p></div>
+    <div class="card"><h4>4.3 扫码出入库</h4><p>扫码 / 条码 / 编码快速出入库，实时扣加库存，流水全程留痕，低库存提示。</p></div>
+    <div class="card"><h4>4.4 采购入库</h4><p>供应商管理 + 采购单（草稿 / 确认）+ 扫码建单 + 批量入库，明细写入库存流水与成本基础。</p></div>
+    <div class="card"><h4>4.5 销售出库</h4><p>销售单草稿 CRUD + 折扣，确认出库自动减库存，可回滚。</p></div>
+    <div class="card"><h4>4.6 财务对账</h4><p>成本快照（出库固化成本）、毛利分析（总额 / 成本 / 毛利 / 毛利率 / 单数 / 件数）、按渠道分组对账、日期过滤、员工可见性控制。</p></div>
+    <div class="card"><h4>4.7 库存分析</h4><p>汇总、分类库存、库存排行、销售排行、慢动销、低库存、30 天趋势，员工可查看。</p></div>
+    <div class="card"><h4>4.8 标签打印</h4><p>60×40 默认画布、元素整体缩放、三段式自动排版、常用发件人、布局模板（LabelTemplate）、一维 / 二维码元素；打印用 <code>display:none</code> 隔离后台布局，避免多页空白纸。</p></div>
+    <div class="card"><h4>4.9 渠道追踪</h4><p>销售渠道管理（天猫 / 抖音 / 未指定等），按渠道统计销售与毛利。</p></div>
+    <div class="card"><h4>4.10 审计日志与清理（v1.1.1）</h4><p>关键操作全程留痕；<code>DELETE /api/audits</code> 手动清理（boss / admin，按日期或清空）；启动自动清理默认保留 90 天（<code>AUDIT_RETENTION_DAYS</code>），清理动作本身留痕。</p></div>
+    <div class="card"><h4>4.11 设置中心（v1.1）</h4><p>UI 外观自定义（亮 / 暗 / 随机 + 预设主题 + 背景图 DIY）；数据存储安全迁移（备份 / 校验 / 回滚，仅 boss / admin）；云端备份占位入口。</p></div>
+    <div class="card"><h4>4.12 终端背景主题系统（v1.2 起）</h4><p>品牌登录页加载动画（约 2.5s，<code>prefers-reduced-motion</code> 跳过）；主界面全直角工业风设计令牌（黄 #fff500 / 青 #14d0d0、斜线网格、HUD 角标）；主题绑定背景（谷地黄 → bg_day_05 白天、武陵青 → bg_night_01 夜晚），上传自定义背景优先级最高。</p></div>
+  </section>
+
+  <!-- 五、版本历史 -->
+  <section id="s5">
+    <h2>五、版本更新历史（v1.0 → v1.3.3）</h2>
+    <div class="verline">
+      <div class="veritem"><span class="vtag">v1.3.3</span>2026-08-27<p>主题背景<b>本地缓存兜底 + 后端校准</b>：新增 <code>frontend/src/utils/theme.js</code>（缓存键 <code>appThemePref</code>，含 saveLocalPref / loadLocalPref / isDefaultPref）；App.vue 先本地应用再异步后端校准——后端失败保留本地、后端无记录用本地、成功覆盖缓存；SettingsDialog.vue 保存后写缓存、挂载时校准，彻底修复刷新后主题 / 背景丢失（commit e6c6b6a）。同步纳入 v1.3.2 背景素材与 RELEASE.md。</p></div>
+      <div class="veritem"><span class="vtag">v1.3.2</span>2026-08-26 ~ 08-27<p><b>背景切换终末地官网风格真实图</b>：新增谷地黄 <code>bg_day_05.jpg</code>、武陵青 <code>bg_night_01.jpg</code> 真实美术素材，替代自绘概念场景（素材保留在 <code>frontend/public/backgrounds/</code>，为分发包必保留项）。</p></div>
+      <div class="veritem"><span class="vtag">v1.3.1</span>2026-08-26<p><b>品牌更名 + 菜单重构</b>：全局更名「0号仓库库存管理系统」；侧边栏按「库存管理 / 运营分析 / 系统」分组，「商品回收站」下沉为二级子菜单、首页独立置顶；收起态品牌区横条常驻，导航收窄为图标条（tooltip 保留）。</p></div>
+      <div class="veritem"><span class="vtag">v1.3</span>2026-08-26<p><b>回收站 + 批量删除 + 智能筛选 + 权限收紧</b>：批量软删除进回收站（30 天保留）；回收站列表 / 批量还原 / 彻底删除（物理删 + 清关联流水）；智能筛选（库存为空 / 长期无变动）；删除账号收紧为仅 boss。</p></div>
+      <div class="veritem"><span class="vtag">v1.2.2</span>2026-08-26<p><b>真实星云背景 + 详情页辨识度</b>：背景改用太空星云真实截图（1920×1080）；面板 / 卡片 / 表格 / 按钮全吃主题令牌——谷地黄黄 #fff500 + 白底黑字、武陵青青 #14d0d0 + 深色底。</p></div>
+      <div class="veritem"><span class="vtag">v1.2.1</span>2026-08-25<p><b>主界面终末地化</b>：面板 / 表格 / 按钮 / 弹窗 / 侧边栏统一终末地设计令牌；新增主题概念背景系统（SVG 自绘，谷地黄 = 工业废土城、武陵青 = 科学院 / 科幻都市）。</p></div>
+      <div class="veritem"><span class="vtag">v1.2</span>2026-08-25<p><b>UI 视觉升级</b>：品牌登录页终末地加载动画；新增两套全直角工业风主题；侧边栏动态收展；路由转场动画；粒子星云 HUD 噪点质感。</p></div>
+      <div class="veritem"><span class="vtag">v1.1.1</span>2026-08-24<p><b>操作日志清理 + 侧边栏固定</b>：审计日志手动 / 启动自动清理（默认 90 天）；左侧目录栏固定，仅内容区滚动。</p></div>
+      <div class="veritem"><span class="vtag">v1.1</span>2026-08-24<p><b>设置中心</b>：UI 外观自定义、数据存储安全迁移（备份 / 校验 / 回滚）、云端备份占位入口；存储区按角色显隐。</p></div>
+      <div class="veritem"><span class="vtag cyan">v1.0 初稿</span>2026-08-23<p>商品档案 / 扫码出入库 / 采购入库 / 销售出库 / 财务对账 / 库存分析 / 标签打印 / 三级账号权限 / 渠道追踪 / 审计日志；Docker 本地验证 + 回归测试通过。</p></div>
+    </div>
+  </section>
+
+  <!-- 六、部署 -->
+  <section id="s6">
+    <h2>六、安装部署与运行</h2>
+    <h3>6.1 环境要求</h3>
+    <table><tr><th>项</th><th>要求</th></tr>
+      <tr><td>Python</td><td>3.10+（后端）</td></tr>
+      <tr><td>Node.js</td><td>18+（前端构建 / 开发）</td></tr>
+      <tr><td>Docker</td><td>Docker Desktop（自带 WSL2），可选国内镜像加速（部署用）</td></tr>
+    </table>
+    <h3>6.2 本地运行（Windows）</h3>
+    <p><b>一键启动（推荐）</b>：双击根目录 <code>start.bat</code> —— 自动拉起后端（8000）与前端（5173）、首次自动装依赖、就绪自动打开 <code>http://localhost:5173</code>；停止用 <code>stop.bat</code>。</p>
+    <pre><code># 手动启动
+cd backend
+python -m venv venv
+venv\Scripts\pip install -r requirements.txt
+venv\Scripts\python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+cd frontend
+npm install
+npm run dev        # 打开 http://localhost:5173</code></pre>
+    <div class="note warn">主题 / 背景偏好走后端 <code>UserPreference</code>（<code>GET/PUT /api/settings/preference</code>），<b>须同时开启后端</b>；仅开前端 dev（5173）不启后端（8000）会导致主题设置无法持久化。v1.3.3 起即使后端暂不可用，本地缓存也会兜底显示，随后自动校准。</div>
+    <h3>6.3 其他电脑 / 局域网访问</h3>
+    <p>拷贝项目（或 git 拉取）→ 安装 Python 3.10+ 与 Node 18+ → 双击 <code>start.bat</code> → 本机访问 <code>localhost:5173</code>，局域网其他设备访问 <code>http://本机IP:5173</code>（前端 dev 已代理 <code>/api</code>、<code>/static</code> 到后端）。</p>
+    <h3>6.4 Docker 部署</h3>
+    <pre><code>cd deploy
+copy .env.example .env      # Linux: cp .env.example .env
+docker compose up -d --build</code></pre>
+    <ul>
+      <li>前端 <code>http://localhost</code>；健康检查 <code>http://localhost/api/health</code> 返回 <code>{"status":"ok"}</code>。</li>
+      <li>停止 <code>docker compose down</code>（保留 pgdata 数据卷）；彻底移除 <code>docker compose down -v</code>。</li>
+      <li><code>restart: unless-stopped</code> 自动自愈 backend 早于 db 就绪时的连接重试。</li>
+      <li><b>生产必改</b>：<code>deploy/.env</code> 中 <code>POSTGRES_PASSWORD</code> / <code>SECRET_KEY</code> / <code>BOSS_PASSWORD</code>。</li>
+      <li>Docker Hub 拉取超时：daemon <code>registry-mirrors</code> 加入国内加速镜像后重启 Docker Desktop。</li>
+    </ul>
+    <h3>6.5 数据库迁移（SQLite → PostgreSQL）</h3>
+    <p>在 <code>backend/.env</code> 设置 <code>DATABASE_URL=postgresql+psycopg2://inventory:&lt;password&gt;@127.0.0.1:5432/inventory</code>（Docker 部署改 <code>deploy/.env</code>）；启动后端，<code>ensure_schema()</code> 自动按库类型建表 / 迁移。</p>
+    <h3>6.6 数据存储位置迁移（设置中心）</h3>
+    <p>仅本机 SQLite：设置中心 → 数据存储 → 选择新目录，系统自动执行<b>备份 → 拷贝 → 校验 → 回滚兜底</b>；拒绝迁移到当前目录子目录 / 相同目录。</p>
+  </section>
+
+  <!-- 七、默认账号 -->
+  <section id="s7">
+    <h2>七、默认账号（首次登录后请尽快修改）</h2>
+    <table>
+      <tr><th>角色</th><th>用户名</th><th>初始密码</th><th>权限</th></tr>
+      <tr><td>老板</td><td><code>boss</code></td><td><code>admin123</code></td><td>全部权限 + 账号管理</td></tr>
+      <tr><td>管理员</td><td><code>admin1</code></td><td><code>admin123</code></td><td>业务增改 + 后台管理，<b>不能</b>管账号</td></tr>
+      <tr><td>员工</td><td><code>staff1</code></td><td><code>123456</code></td><td>仅查看数据</td></tr>
+    </table>
+    <p class="muted">老板账号唯一且不可删、不可接口创建；管理员与员工由老板在「账号权限」创建。</p>
+  </section>
+
+  <!-- 八、主题 -->
+  <section id="s8">
+    <h2>八、主题与外观自定义说明</h2>
+    <ul>
+      <li><b>亮度</b>：亮 / 暗 / 随系统（含随机）。</li>
+      <li><b>主题色</b>：8 套预设，其中「终末地·谷地黄」（黄 #fff500 暖调）、「终末地·武陵青」（青 #14d0d0 冷调）为全直角工业风主题，「0号仓库蓝紫」保留为备选。</li>
+      <li><b>背景图</b>：谷地黄默认 <code>bg_day_05.jpg</code>（暖色废土城 / 白天），武陵青默认 <code>bg_night_01.jpg</code>（冷色科研都市 / 夜晚）；上传自定义图片优先展示；保留 <code>endfield_space.jpg</code>（太空星云）素材。</li>
+      <li><b>持久化</b>：偏好写后端 <code>UserPreference</code> 表（换设备一致）；v1.3.3 起本地缓存 <code>appThemePref</code> 兜底 + 后端校准，刷新后主题背景不丢失。</li>
+      <li><b>可读性</b>：背景图低透明度 + 主题色半透明遮罩，面板 / 表格文字始终清晰。</li>
+    </ul>
+  </section>
+
+  <!-- 九、回收站权限 -->
+  <section id="s9">
+    <h2>九、回收站 / 智能筛选 / 权限说明</h2>
+    <h3>9.1 回收站（v1.3）</h3>
+    <ul>
+      <li><b>批量删除</b>（商品档案勾选 → 批量删除，仅 boss / admin）：货品标记 <code>deleted_at</code> 软删除，进回收站，历史出入库 / 采购 / 销售流水<b>全部保留</b>，可还原。</li>
+      <li><b>回收站列表</b>：显示删除时间 / 剩余清理天数倒计时。</li>
+      <li><b>批量还原</b>：一键恢复为正常商品。</li>
+      <li><b>彻底删除</b>：物理删除货品 + 清关联数据（库存流水 / 采购明细 / 销售明细 / 图片 / 规格），<b>不可恢复</b>，二次确认。</li>
+      <li><b>自动清理</b>：服务启动时物理清除<b>超过 30 天</b>仍在回收站的数据。</li>
+    </ul>
+    <h3>9.2 智能筛选</h3>
+    <p>「商品档案 → 批量删除」弹窗的<b>智能分析</b>：按时间线（如 30 / 90 / 180 天）调用 <code>GET /api/recycle/analyze</code>，返回建议关注清单 —— <b>库存为空</b> 或 <b>最后变动距今超过所选天数</b> 的货品，含积压天数与原因，可勾选直接批量移入回收站。</p>
+    <h3>9.3 权限矩阵</h3>
+    <table>
+      <tr><th>功能</th><th>boss</th><th>admin</th><th>staff</th></tr>
+      <tr><td>商品 / 出入库 / 采购 / 销售 / 分析 / 打印 / 渠道</td><td>✔</td><td>✔</td><td>仅查看</td></tr>
+      <tr><td>回收站（列表 / 删除 / 还原 / 彻底删除）</td><td>✔</td><td>✔</td><td>✘（路由拦截）</td></tr>
+      <tr><td>财务对账 / 操作日志</td><td>✔</td><td>✔</td><td>✘</td></tr>
+      <tr><td>账号管理</td><td>✔</td><td>✘</td><td>✘</td></tr>
+      <tr><td>删除账号</td><td>✔</td><td>✘</td><td>✘</td></tr>
+    </table>
+  </section>
+
+  <!-- 十、回归测试 -->
+  <section id="s10">
+    <h2>十、回归测试</h2>
+    <pre><code>cd backend
+venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8765   # 隔离临时库
+venv\Scripts\python.exe test_analysis.py          # 库存分析  58 PASS
+venv\Scripts\python.exe test_catunit.py           # 分类/单位 14 PASS
+venv\Scripts\python.exe test_finance.py           # 财务对账  49 PASS
+venv\Scripts\python.exe test_label_print.py       # 标签打印  22 PASS
+venv\Scripts\python.exe test_label_templates.py   # 标签模板  31 PASS
+venv\Scripts\python.exe test_purchase.py          # 采购入库  36 PASS
+venv\Scripts\python.exe test_sales.py             # 销售出库  35 PASS
+venv\Scripts\python.exe test_settings.py          # 设置中心  30 PASS
+venv\Scripts\python.exe test_audit_cleanup.py     # 日志清理  13 PASS
+
+cd frontend && npm run build                       # 生产构建</code></pre>
+    <div class="note">v1.3.3 基线实测：后端 9 个回归脚本 <b>288 PASS 全绿</b>，前端 <code>npm run build</code> 构建成功。</div>
+  </section>
+
+  <!-- 十一、打包发布 -->
+  <section id="s11">
+    <h2>十一、打包发布（GitHub）指引</h2>
+    <p>发布包为「干净源码包」，仅含源码与运行必需文件，<b>不含</b>本地依赖与业务数据：</p>
+    <pre><code>ECommerceInventorySystem-v1.3.3-YYYYMMDD.zip
+├── backend/     app 源码 + 9 个回归测试 + requirements.txt + Dockerfile + .env.example
+├── frontend/    src 源码 + package.json + nginx.conf + Dockerfile + public/backgrounds 素材
+├── database/    数据库脚本（Docker 自动建表）
+├── deploy/      docker-compose.yml + start/stop-docker.sh + .env.example
+├── docs/        README-full.md + manual.html（说明文档）
+├── README.md / RELEASE.md / start.bat / stop.bat / .gitignore</code></pre>
+    <table>
+      <tr><th>排除项</th><th>原因</th></tr>
+      <tr><td>node_modules / dist</td><td>npm 依赖与构建产物，新机器 npm install / npm run build 重建</td></tr>
+      <tr><td>venv / __pycache__ / *.log</td><td>环境与调试残留</td></tr>
+      <tr><td>*.db（含 test_*.db）/ backend/data</td><td>本地业务数据与运行目录（含用户上传 media）</td></tr>
+      <tr><td>.git / .env（密钥）</td><td>Git 元数据 / 本地密文环境变量，只保留 .env.example</td></tr>
+    </table>
+    <div class="note"><b>保留</b>：<code>frontend/public/backgrounds/</code> 三张主题背景素材（bg_day_05 / bg_night_01 / endfield_space），属必需美术资源。</div>
+    <pre><code>git add .
+git commit -m "feat: v1.3.3 主题背景本地缓存兜底+后端校准"
+git tag v1.3.3
+git remote add origin https://github.com/&lt;你的用户名&gt;/ECommerceInventorySystem.git   # 首次
+git push -u origin master && git push --tags</code></pre>
+    <p><b>发行前检查</b>：后端回归全绿 ｜ 前端 build 成功 ｜ inventory.db 与 .env 未入库未进包 ｜ 无 __pycache__ / *.log / test_*.db 残留 ｜ Docker 三服务可启动且 /api/health 200 ｜ 生产密码已更换。</p>
+  </section>
+
+  <!-- 十二、FAQ -->
+  <section id="s12">
+    <h2>附录 A：常见问题（FAQ）</h2>
+    <table>
+      <tr><th>问题</th><th>处理</th></tr>
+      <tr><td>刷新后主题 / 背景丢失</td><td>v1.3.3 已修复（本地缓存兜底 + 后端校准）；确认后端（8000）已启动</td></tr>
+      <tr><td>主题修改换机器不一致</td><td>偏好走后端 UserPreference，非 localStorage；同账号登录即同步</td></tr>
+      <tr><td>打印标签多页空白</td><td>已用 display:none 隔离后台布局只打印输出区；旧版本建议升级</td></tr>
+      <tr><td>背景图不显示</td><td>检查 public/backgrounds 素材存在，改动后需重新 npm run build</td></tr>
+      <tr><td>Docker 拉镜像超时</td><td>daemon registry-mirrors 配国内加速后重启 Docker Desktop</td></tr>
+      <tr><td>忘记老板密码</td><td>重置本地 SQLite 中 User 密码哈希（backend/data/inventory.db）</td></tr>
+      <tr><td>切换 PostgreSQL</td><td>设置 DATABASE_URL=postgresql+psycopg2://…，ensure_schema() 自动建表迁移</td></tr>
+      <tr><td>回收站自动清理</td><td>30 天自动清理在服务启动时触发；可手动「彻底删除」立即清理</td></tr>
+    </table>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">0号仓库库存管理系统 · ECommerceInventorySystem · v1.3.3（2026-08-27）&nbsp;|&nbsp; 本页为随项目分发的自包含说明文档，可离线打开。</div>
+</footer>
+
+</body>
+</html>

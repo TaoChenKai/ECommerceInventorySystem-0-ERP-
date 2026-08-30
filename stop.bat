@@ -1,0 +1,6 @@
+@echo off
+echo Stopping ECommerce Inventory System (ports 8000 / 5173)...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr /r /c:":8000 .*LISTENING"') do taskkill /f /pid %%a >nul 2>&1
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr /r /c:":5173 .*LISTENING"') do taskkill /f /pid %%a >nul 2>&1
+echo Services stopped. Window closes in 3 seconds...
+ping -n 4 127.0.0.1 >nul
